@@ -1,0 +1,272 @@
+{
+  //
+  // VS Code
+  //
+  "telemetry.telemetryLevel": "off",
+  "update.mode": "none",
+  "update.showReleaseNotes": false,
+  "workbench.enableExperiments": false,
+  "redhat.telemetry.enabled": false,
+  "git.confirmSync": false,
+  "git.autofetch": true,
+  "remote.SSH.configFile": "~/.ssh/config",
+  "docker.volumes.sortBy": "CreatedTime",
+  "docker.images.sortBy": "CreatedTime",
+  "material-icon-theme.activeIconPack": "react",
+  // Extensions
+  "extensions.autoUpdate": false,
+  "extensions.autoCheckUpdates": false,
+  "extensions.ignoreRecommendations": true,
+  // EditorConfig
+  "editorconfig.generateAuto": false,
+  "editorconfig.template": "/Users/egorzorin/.dotfiles/editorconfig/.editorconfig",
+  // Draw.io
+  "hediet.vscode-drawio.codeLinkActivated": false,
+  "hediet.vscode-drawio.theme": "automatic",
+  // cSpell
+  "cSpell.language": "en,en-US",
+  "cSpell.enableFiletypes": [
+    "!less",
+    "!php",
+    "!scala",
+    "!vue",
+    "dockercompose",
+    "dockerfile",
+    "dotenv",
+    "editorconfig",
+    "ini",
+    "nginx",
+    "toml",
+    "jupyter"
+  ],
+  "cSpell.userWords": [
+    "datasheet",
+    "datasheets",
+    "deserialization",
+    "Egor",
+    "gtins",
+    "Nezort",
+    "openapi",
+    "oraganization",
+    "serializers",
+    "Signin",
+    "signup"
+  ],
+  // Error lens
+  "errorLens.fontSize": "12px",
+  "errorLens.fontWeight": "400",
+  "errorLens.borderRadius": "5px",
+  "errorLens.followCursor": "allLines",
+  "errorLens.excludeBySource": ["cSpell"],
+  "errorLens.fontStyleItalic": true,
+  "errorLens.gutterIconsEnabled": true,
+  "errorLens.messageTemplate": "$message ($source)",
+  "errorLens.onSave": true,
+  "errorLens.statusBarMessageEnabled": false,
+  "errorLens.statusBarColorsEnabled": true,
+  //
+  // Workbench
+  //
+  "workbench.startupEditor": "welcomePageInEmptyWorkbench",
+  "workbench.sideBar.location": "right",
+  "workbench.colorTheme": "One Dark Pro",
+  "workbench.iconTheme": "material-icon-theme",
+  "workbench.editor.enablePreview": true,
+  "window.closeWhenEmpty": false,
+  "window.restoreWindows": "none",
+  // "window.autoDetectColorScheme": true,
+  "workbench.preferredDarkColorTheme": "One Dark Pro",
+  // "workbench.preferredLightColorTheme": "Light+",
+  // "workbench.editor.enablePreviewFromCodeNavigation": false,
+  // "workbench.editor.enablePreviewFromQuickOpen": false,
+  // Terminal
+  "terminal.integrated.fontSize": 14,
+  "terminal.integrated.sendKeybindingsToShell": true,
+  "terminal.integrated.persistentSessionReviveProcess": "never",
+  //
+  // Explorer
+  //
+  "explorer.confirmDelete": false,
+  "explorer.confirmDragAndDrop": false,
+  "explorer.sortOrder": "type",
+  "files.exclude": {
+    "**/.git": true,
+    "**/.svn": true,
+    "**/.hg": true,
+    "**/CVS": true,
+    "**/.DS_Store": true,
+    "**/Thumbs.db": true,
+    // Python
+    "**/__pycache__": true,
+    "**/*.pyc": true,
+    "**/.mypy_cache/**": true,
+    "**/.pytest_cache/**": true
+  },
+  //
+  // Editor interface (VS Code)
+  //
+  "editor.fontSize": 13,
+  "editor.fontFamily": "Fira Code, Menlo, Monaco, 'Courier New', monospace",
+  "editor.fontLigatures": true,
+  "editor.fontWeight": "400", // Regular
+  "editor.minimap.enabled": false,
+  "editor.occurrencesHighlight": false,
+  "editor.matchBrackets": "near",
+  "editor.renderLineHighlightOnlyWhenFocus": true,
+  "diffEditor.ignoreTrimWhitespace": false,
+  "editor.suggest.localityBonus": true,
+  "editor.suggest.preview": true,
+  "editor.tabCompletion": "on",
+  // Formatting (interface)
+  "editor.formatOnPaste": true,
+  "editor.formatOnSave": true,
+  "editor.formatOnType": true,
+  "editor.formatOnSaveMode": "file",
+  //
+  // Editor code formatting (configuration)
+  //
+  "files.encoding": "utf8",
+  "editor.tabSize": 4,
+  "editor.insertSpaces": true,
+  "editor.detectIndentation": false,
+  "editor.useTabStops": true,
+  "editor.wordWrap": "on",
+  "files.insertFinalNewline": true,
+  "files.trimTrailingWhitespace": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  // .prettierrc - Prettier config (formatting by VS Code)
+  // NOTE: this config is not applied to `prettier` command line program
+  "prettier.enable": true,
+  "prettier.useEditorConfig": true,
+  "prettier.tabWidth": 2,
+  "prettier.endOfLine": "auto",
+  "prettier.arrowParens": "always",
+  "prettier.bracketSpacing": true,
+  "prettier.ignorePath": ".prettierignore",
+  "prettier.htmlWhitespaceSensitivity": "css",
+  "prettier.semi": true,
+  "prettier.singleQuote": false,
+  "prettier.useTabs": false,
+  "prettier.vueIndentScriptAndStyle": false,
+  "prettier.proseWrap": "always",
+  "prettier.withNodeModules": false,
+  // Language specific formatting (i.e. .editorconfig)
+  "[python]": {
+    "editor.defaultFormatter": "ms-python.python", // black via ms-python
+    "editor.tabSize": 4,
+    "editor.codeActionsOnSave": { "source.organizeImports": true }
+  },
+  "[html][css][scss][sass][javascript][json][jsonc]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.tabSize": 2
+  },
+  "[jinja]": {
+    "editor.defaultFormatter": "vscode.html-language-features",
+    "editor.tabSize": 2
+  },
+  "[yaml]": {
+    "editor.defaultFormatter": "redhat.vscode-yaml",
+    "editor.tabSize": 2
+  },
+  "[toml]": {
+    "editor.defaultFormatter": "bodil.prettier-toml",
+    "editor.tabSize": 2
+  },
+  "[nginx]": {
+    "editor.defaultFormatter": "raynigon.nginx-formatter",
+    "editor.tabSize": 2
+  },
+  "[markdown]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.tabSize": 2,
+    "editor.unicodeHighlight.ambiguousCharacters": false,
+    "editor.quickSuggestions": false,
+    "editor.wordWrap": "on"
+  },
+  "[makefile]": {
+    "editor.insertSpaces": false
+  },
+  // Other formatters config
+  "nginx-conf-hint.format.align": true,
+  //
+  // Vim interface
+  //
+  "editor.lineNumbers": "relative",
+  "vim.highlightedyank.enable": true,
+  "vim.showMarksInGutter": true,
+  "vim.incsearch": true,
+  "vim.hlsearch": true,
+  "vim.smartcase": true,
+  "vim.useSystemClipboard": true,
+  "vim.surround": true,
+  "vim.leader": " ",
+  // Keybinding
+  "vim.normalModeKeyBindingsNonRecursive": [
+    {
+      "before": ["<leader>", "w"],
+      "commands": ["workbench.action.splitEditor"]
+    },
+    {
+      "before": ["<leader>", "t"],
+      "commands": ["workbench.action.toggleSidebarVisibility"]
+    }
+  ],
+  //
+  // Python
+  //
+  "python.pythonPath": "~/.pyenv/versions/3.9.6/bin/python",
+  "python.venvPath": "~/.local/share/virtualenvs",
+  "python.terminal.activateEnvironment": true, // or zsh pipenv plugin
+  "python.globalModuleInstallation": true, // global black, pylint, ...
+  // Formatting
+  "python.formatting.provider": "black",
+  "python.formatting.blackPath": "black", // global or virtual environemnt
+  "python.formatting.blackArgs": [
+    "--line-length=88",
+    "--exclude='^.*\b(migrations)\b.*$'",
+    "--extend-exclude=.venv"
+  ],
+  // VS Code Python ships with internal version of `isort` and `jedi`
+  // "python.sortImports.path": "",
+  "python.sortImports.args": [
+    "--profile=black"
+    // "--settings-path=${workspaceFolder}/setup.cfg"
+  ],
+  // Linting
+  "python.linting.enabled": true,
+  "python.linting.lintOnSave": true,
+  "python.languageServer": "Pylance",
+  "python.linting.pylintEnabled": true, // .pylintrc config (pylint --generate-rcfile)
+  "python.linting.pycodestyleEnabled": false,
+  "python.linting.flake8Enabled": false,
+  "python.linting.pylamaEnabled": false,
+  "python.linting.mypyEnabled": false,
+  "python.linting.banditEnabled": false,
+  // Pylance/pyright
+  "python.analysis.typeCheckingMode": "basic",
+  "python.analysis.autoImportCompletions": true,
+  "python.analysis.completeFunctionParens": true,
+  // Testing
+  "python.testing.pytestEnabled": true,
+  "python.testing.autoTestDiscoverOnSaveEnabled": true,
+  // Django
+  "files.associations": {
+    "**/templates/**/*.html": "jinja",
+    ".env.*": "dotenv"
+  },
+  // Jupyter config (IPython in VS Code + Pylance)
+  "jupyter.disableJupyterAutoStart": true,
+  "jupyter.pylanceHandlesNotebooks": true, // Jupyter + Pylance
+  "jupyter.jupyterServerType": "local",
+  "jupyter.sendSelectionToInteractiveWindow": true,
+  "jupyter.themeMatplotlibPlots": true,
+  //
+  // JavaScript
+  //
+  // Formatting
+  // i.e. Prettier
+  // Linting
+  "eslint.alwaysShowStatus": true,
+  "npm.enableRunFromFolder": true,
+  "sonarlint.disableTelemetry": true
+}

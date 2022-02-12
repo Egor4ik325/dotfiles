@@ -1,0 +1,47 @@
+// Place your key bindings in this file to override the defaults
+[
+  {
+    "key": "cmd+w",
+    "command": "-workbench.action.closeWindow",
+    "when": "!editorIsOpen && !multipleEditorGroups"
+  },
+  {
+    "key": "f12",
+    "command": "-editor.action.revealDefinition",
+    "when": "editorHasDefinitionProvider && editorTextFocus && !isInEmbeddedEditor"
+  },
+  {
+    "key": "shift+alt+f",
+    "command": "-editor.action.formatDocument.none",
+    "when": "editorTextFocus && !editorHasDocumentFormattingProvider && !editorReadonly"
+  },
+  {
+    "key": "shift+alt+f",
+    "command": "-editor.action.formatDocument",
+    "when": "editorHasDocumentFormattingProvider && editorTextFocus && !editorReadonly && !inCompositeEditor"
+  },
+  {
+    "key": "shift+alt+f",
+    "command": "-notebook.formatCell",
+    "when": "editorHasDocumentFormattingProvider && editorTextFocus && inCompositeEditor && notebookEditable && !editorReadonly && activeEditor == 'workbench.editor.notebook'"
+  },
+  {
+    "key": "shift+alt+f",
+    "command": "-notebook.format",
+    "when": "notebookEditable && !editorTextFocus && activeEditor == 'workbench.editor.notebook'"
+  },
+  {
+    "key": "enter",
+    "command": "jupyter.runcurrentcell",
+    "when": "editorTextFocus && isWorkspaceTrusted && jupyter.hascodecells && !editorHasSelection && !jupyter.havenativecells && !notebookEditorFocused"
+  },
+  {
+    "key": "tab",
+    "command": "-editor.emmet.action.expandAbbreviation",
+    "when": "config.emmet.triggerExpansionOnTab && editorTextFocus && !editorReadonly && !editorTabMovesFocus"
+  },
+  {
+    "key": "shift+cmd+i",
+    "command": "jupyter.createnewinteractive"
+  }
+]

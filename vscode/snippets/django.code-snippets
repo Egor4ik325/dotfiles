@@ -1,0 +1,455 @@
+{
+  //
+  // Django apps
+  //
+  "class AppConfig(AppConfig)": {
+    "scope": "python",
+    "prefix": "AppConfig",
+    "body": [
+      "class $1Config(AppConfig):",
+      "    \"\"\"Application config for ${1/(.*)/${1:/downcase}/}.\"\"\"",
+      "",
+      "    name = \"${1/(.*)/${1:/downcase}/}\"",
+      "    verbose_name = _(\"$1\")", // for API documentation generation + for admin (user + i18n)
+      "    label = \"${1/(.*)/${1:/downcase}/}\"", // used in INSTALLED_APPS
+      ""
+    ]
+  },
+  //
+  // Django translation framework
+  //
+  // Translation can be useful only in `models.py` in template or *admin* (users)
+  // not in REST API (used by developers)
+  "gettext_lazy": {
+    "scope": "python",
+    "prefix": "gettext",
+    "body": ["from django.utils.translation import gettext_lazy as _"]
+  },
+
+  "User = get_user_model()": {
+    "scope": "python",
+    "prefix": "get_user_model",
+    "body": [
+      "from django.contrib.auth import get_user_model",
+      "",
+      "User = get_user_model()"
+    ]
+  },
+
+  "from django.conf import settings": {
+    "scope": "python",
+    "prefix": "import_settings",
+    "body": ["from django.conf import settings"]
+  },
+  //
+  // Djnago admin framework
+  //
+  "class ModelAdmin(ModelAdmin)": {
+    "prefix": "ModelAdmin",
+    "body": [
+      "@register($1)",
+      "class $1Admin(ModelAdmin):",
+      "    \"\"\"Admin interface for ${1/(.*)/${1:/downcase}/} model.\"\"\"",
+      "    ",
+      "    pass",
+      ""
+    ]
+  },
+  //
+  // Django ORM
+  //
+  "class Model(models.Model)": {
+    "scope": "python",
+    "prefix": "Model",
+    "body": [
+      "class $1(models.Model):",
+      "    \"\"\"Model representing ${1/(.*)/${1:/downcase}/}.\"\"\"",
+      "",
+      "    id = models.BigAutoField(verbose_name=_(\"ID\"), primary_key=True)",
+      "    $0",
+      "",
+      "    class Meta:",
+      "        verbose_name = _(\"$1\")", // for admin (user, i18n)
+      "        verbose_name_plural = _(\"$1s\")", // for admin (user, i18n)
+      "        unique_together = []",
+      "        ordering = [\"name\"]",
+      // "        default_permissions = [\"add\", \"change\", \"delete\", \"view\"]",
+      // "        permissions = []",
+      "",
+      "    def clean(self):",
+      "        pass",
+      "",
+      "    def __str__(self):",
+      "        return self.name",
+      "",
+      "    def get_absolute_url(self):",
+      "        return reverse(\"${1/(.*)/${1:/downcase}/}s:detail\", kwargs={\"pk\": self.pk})"
+    ]
+  },
+  "class ModelMixing(models.Model)": {
+    "prefix": "ModelMixin",
+    "body": [
+      "class $1Mixin(models.Model):",
+      "    \"\"\"$1 model mixin.\"\"\"",
+      "",
+      "    id = models.BigAutoField(verbose_name=_(\"ID\"), primary_key=True)",
+      "    $0",
+      "",
+      "    class Meta:",
+      "        abstract = True",
+      ""
+    ]
+  },
+  // General field:
+  // most of constraints aren't useful for REST API (can be implemented in user interface <form>):
+  // - client side (convinient interface): default, max_length, validation.
+  // - server size (data integrity): blank (default), null, unique, validators, editable (user/admin), indecies.
+  "field_name = models.Field()": {
+    "scope": "python",
+    "prefix": "Field",
+    "body": [
+      "$1 = models.$2Field(",
+      "    verbose_name=_(\"${1/(.*)/${1:/capitalize}/}\"),", // for API documentation generation + for admin (user, i18n)
+      "    help_text=_(\"\"),", // for API documentation generation + for admin (user, i18n)
+      "    db_index=True,", // For slug fields
+      "    error_messages={", // More concrete error messages
+      "        \"null\": _(\"\"),",
+      "        \"blank\": _(\"\"),",
+      "        \"unique\": _(\"\"),",
+      "    },",
+      "    editable=True,", // For not editable in the admin
+      "    blank=False,", // Whether field can be left blank (default value "" or None)
+      "    default=None,", // Default default when field is blank
+      "    null=False,", // Whether the field can be assigned or be default to None
+      "    unique=False,", // Whether the field value must be unique (excluding None)
+      "    validators=[]", // Additional field-level validators
+      ")"
+    ]
+  },
+  "field = models.ForeignKey()": {
+    "scope": "python",
+    "prefix": "ForeignKey",
+    "body": [
+      "$1 = models.ForeignKey(",
+      "    verbose_name=_(\"${1/(.*)/${1:/capitalize}/}\"),",
+      "    to=\"$1s.${1/(.*)/${1:/capitalize}/}\",",
+      "    on_delete=models.CASCADE,",
+      "    related_name=\"${TM_DIRECTORY/.*\\///}\",",
+      "    blank=False,",
+      "    null=False,",
+      "    unique=False,",
+      ")"
+    ]
+  },
+  "user = models.ForeignKey()": {
+    "scope": "python",
+    "prefix": "UserForeignKey",
+    "body": [
+      "user = models.ForeignKey(",
+      "    verbose_name=_(\"user\"),",
+      "    to=getattr(settings, 'AUTH_USER_MODEL', 'auth.User'),",
+      "    on_delete=models.CASCADE,",
+      "    related_name=\"${TM_DIRECTORY/.*\\///}\",",
+      ")"
+    ]
+  },
+  "models.CharField()": {
+    "scope": "python",
+    "prefix": "CharField",
+    "body": [
+      "$1 = models.CharField(verbose_name=_(\"$1\"), max_length=255, db_index=False, unique=False, blank=False)"
+    ]
+  },
+  "models.SlugField()": {
+    "scope": "python",
+    "prefix": "SlugField",
+    "body": [
+      "$1 = models.SlugField(verbose_name=_(\"$1\"), db_index=True, unique=True, blank=False)"
+    ]
+  },
+
+  "models.DateTimeField()": {
+    "scope": "python",
+    "prefix": "DateTimeField",
+    "body": [
+      "$1 = models.DateTimeField(verbose_name=_(\"$1\"), auto_now_add=False, auto_now=False)"
+    ]
+  },
+  "models.IntegerField()": {
+    "scope": "python",
+    "prefix": "IntegerField",
+    "body": [
+      "$1 = models.IntegerField(verbose_name=_(\"$1\"), unique=False, null=False, blank=False, default=0)"
+    ]
+  },
+  "models.PositiveIntegerField()": {
+    "scope": "python",
+    "prefix": "PositiveIntegerField",
+    "body": [
+      "$1 = models.PositiveIntegerField(verbose_name=_(\"$1\"), unique=False, null=False, blank=False, default=0)"
+    ]
+  },
+  "models.TextField()": {
+    "scope": "python",
+    "prefix": "TextField",
+    "body": ["$1 = models.TextField(verbose_name=_(\"$1\"), blank=True)"]
+  },
+  "models.UUIDField()": {
+    "scope": "python",
+    "prefix": "UUIDField",
+    "body": [
+      "$1 = models.UUIDField(verbose_name=_(\"$1\"), primary_key=True, default=uuid.uuid4, editable=False)"
+    ]
+  },
+  "models.BooleanField()": {
+    "scope": "python",
+    "prefix": "BooleanField",
+    "body": ["$1 = models.BooleanField(verbose_name=_(\"$1\"), default=False)"]
+  },
+  "models.ManyToManyField()": {
+    "scope": "python",
+    "prefix": "ManyToManyField",
+    "body": [
+      "$1 = models.ManyToManyField(verbose_name=_(\"$1\"), to=\"$2\", related_name=\"$3\", blank=True)"
+    ],
+    "description": "models.ManyToManyField()"
+  },
+  "models.FileField()": {
+    "scope": "python",
+    "prefix": "FileField",
+    "body": [
+      "$1 = models.FileField(verbose_name=_(\"$1\"), upload_to=\"$2\", max_length=255, blank=False, default=None, null=True)"
+    ]
+  },
+  "models.ImageField()": {
+    "scope": "python",
+    "prefix": "ImageField",
+    "body": [
+      "$1 = models.ImageField(verbose_name=_(\"$1\"), upload_to=\"$2\", max_length=255, blank=True, default=None, null=True)"
+    ]
+  },
+  // Field char-stored choices (with example body)
+  "models.TextChoices()": {
+    "scope": "python",
+    "prefix": "TextChoices",
+    "body": [
+      "class $1Choices(models.TextChoices):",
+      "    FREE = \"F\", _(\"Free\")",
+      "    PAID = \"P\", _(\"Paid\")",
+      "    OPEN_SOURCE = \"O\", _(\"Open-Source\")"
+    ]
+  },
+  // Field interger-stored choices (with example body)
+  "models.IntegerChoices()": {
+    "scope": "python",
+    "prefix": "IntegerChoices",
+    "body": [
+      "class $1(models.IntegerChoices):",
+      "    LOWEST = 1, _(\"Lowest\")",
+      "    LOW = 2, _(\"Low\")",
+      "    NORMAL = 3, _(\"Normal\")",
+      "    HIGH = 4, _(\"High\")",
+      "    HIGHEST = 5, _(\"Highest\")"
+    ]
+  },
+  //
+  // Testing
+  //
+  "class ModelFactory(DjangoModelFactory)": {
+    "scope": "python",
+    "prefix": "ModelFactory",
+    "body": [
+      "class $1Factory(DjangoModelFactory):",
+      "    \"\"\"",
+      "    Factory class for ${1/(.*)/${1:/downcase}/} instance fixtures.",
+      "    \"\"\"",
+      "",
+      "    $0",
+      "",
+      "    class Meta:",
+      "        model = $1"
+    ]
+  },
+  //
+  // Django REST Framework
+  //
+  "class ModelSerializer(serializers.ModelSerializer)": {
+    "scope": "python",
+    "prefix": "ModelSerializer",
+    "body": [
+      "class $1Serializer(serializers.ModelSerializer):",
+      "    \"\"\"Serializer and deserializer for ${1/(.*)/${1:/downcase}/} model.\"\"\"",
+      "",
+      "    class Meta:",
+      "        model = $1",
+      "        fields = []",
+      "        read_only_fields = []",
+      "        extra_kwargs = {}"
+    ]
+  },
+  "class ModelViewSet(serializers.ModelViewSet)": {
+    "scope": "python",
+    "prefix": "ModelViewSet",
+    "body": [
+      "class $1ViewSet(viewsets.$2ModelViewSet):",
+      "    \"\"\"ViewSet for ${1/(.*)/${1:/downcase}/}.\"\"\"",
+      "",
+      "    # Queryset and serialization",
+      "    queryset = $1.objects.all()",
+      "    serializer_class = $1Serializer",
+      "",
+      "    # URLconf",
+      "    lookup_field = \"pk\"",
+      "    lookup_url_kwarg = \"pk\"",
+      "    lookup_value_regex = r\"[^/.]+\"",
+      "",
+      "    # Authentication and authorization",
+      "    authentication_classes = [SessionAuthentication, TokenAuthentication]",
+      "    permission_classes = [$1Permission]",
+      "    throttle_classes = [$1BurstRateThrottle, $1SustainRateThrottle]",
+      "",
+      "    # Result correction",
+      "    pagination_class = $1Pagination",
+      "    filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]",
+      "    filterset_class = $1Filter",
+      "    filterset_fields = []",
+      "    search_fields = []",
+      "    ordering_fields = []",
+      "",
+      "    def get_queryset(self):",
+      "        return self.queryset"
+    ]
+  },
+  // Custom router model
+  "class Router(routers.DefaultSimpleRouter)": {
+    "scope": "python",
+    "prefix": "Router",
+    "body": [
+      "class Router(routers.${2|Simple,Default|}Router):",
+      "    \"\"\"Custom API router}.\"\"\"",
+      "",
+      "    routes = [",
+      "        routers.Route(",
+      "            url=r\"^{prefix}{trailing_slash}$\",",
+      "            mapping={\"get\": \"list\", \"post\": \"create\"},",
+      "            name=\"{basename}-list\",",
+      "            detail=False,",
+      "            initkwargs={\"suffix\": \"List\"},",
+      "        ),",
+      "        routers.DynamicRoute(",
+      "            url=r\"^{prefix}/{url_path}{trailing_slash}$\",",
+      "            name=\"{basename}-{url_name}\",",
+      "            detail=False,",
+      "            initkwargs={},",
+      "        ),",
+      "        routers.Route(",
+      "            url=r\"^{prefix}/{lookup}{trailing_slash}$\",",
+      "            mapping={",
+      "                \"get\": \"retrieve\",",
+      "                \"put\": \"update\",",
+      "                \"patch\": \"partial_update\",",
+      "                \"delete\": \"destroy\",",
+      "            },",
+      "            name=\"{basename}-detail\",",
+      "            detail=True,",
+      "            initkwargs={\"suffix\": \"Instance\"},",
+      "        ),",
+      "        routers.DynamicRoute(",
+      "            url=r\"^{prefix}/{lookup}/{url_path}{trailing_slash}$\",",
+      "            name=\"{basename}-{url_name}\",",
+      "            detail=True,",
+      "            initkwargs={},",
+      "        ),",
+      "    ]"
+    ]
+  },
+  // Request and object level permission checking
+  "class ModelPermission(BasePermission)": {
+    "scope": "python",
+    "prefix": "Permission",
+    "body": [
+      "class $1Permission(BasePermission):",
+      "    \"\"\"Authorization for ${1/(.*)/${1:/downcase}/}.\"\"\"",
+      "",
+      "    def has_permission(self, request: Request, view: ViewSet) -> bool:                ",
+      "        \"\"\"Request-level authorization.\"\"\"",
+      "        return False",
+      "",
+      "    def has_object_permission(self, request: Request, view: ViewSet, obj: $1) -> bool:",
+      "        \"\"\"Object-level authorization.\"\"\"",
+      "        return False",
+      ""
+    ]
+  },
+  // Response paginator
+  "class ModelPagination(pagination.PageNumberPagination):": {
+    "scope": "python",
+    "prefix": "Pagination",
+    "body": [
+      "class $1Pagination(pagination.PageNumberPagination):",
+      "    \"\"\"Response data pagination for ${1/(.*)/${1:/downcase}/}.\"\"\"",
+      "",
+      "    page_size = $2",
+      "    max_page_size = $3",
+      "    page_query_param = \"page\"",
+      "    page_size_query_param = \"page_size\"",
+      ""
+    ]
+  },
+  "class APIError(exceptions.APIException)": {
+    "scope": "python",
+    "prefix": "Exception",
+    "body": [
+      "class $1Error(exceptions.APIException):",
+      "    \"\"\"API exception for ${1/(.*)/${1:/downcase}/}.\"\"\"",
+      "",
+      "    status_code = status.HTTP_400_BAD_REQUEST",
+      "    default_detail = \"$2\"",
+      "    default_code = \"${1/(.*)/${1:/downcase}/}_error\""
+    ]
+  },
+  "class RateThrottle(throttling.UserRateThrottle)": {
+    "scope": "python",
+    "prefix": "Throttle",
+    "body": [
+      "class $1BurstThrottle(throttling.UserRateThrottle):",
+      "    \"\"\"Throttle for ${1/(.*)/${1:/downcase}/}.\"\"\"",
+      "",
+      "    rate = \"$2/${3|sec,min,hour,day|}\""
+    ]
+  },
+  "def view(request)": {
+    "scope": "python",
+    "prefix": "Function-based API view",
+    "body": [
+      "@decorators.api_view([\"GET\"])",
+      "@decorators.authentication_classes([SessionAuthentication, TokenAuthentication])",
+      "@decorators.permission_classes([IsAuthenticated])",
+      "@decorators.throttle_classes([InvitationBurstThrottle])",
+      "@decorators.schema(None)",
+      "def $1_view(request: Request):",
+      "    \"\"\"",
+      "    Function-based view.",
+      "    \"\"\"",
+      "",
+      "    $0    ",
+      "",
+      "    return Response(data=serializer.data, status=status.HTTP_200_OK)"
+    ]
+  },
+  "class ModelFilter(filters.FilterSet):": {
+    "scope": "python",
+    "prefix": "Filter",
+    "body": [
+      "class $1Filter(filters.FilterSet):",
+      "   \"\"\"Filter set for ${1/(.*)/${$1:/downcase}/} model.\"\"\"",
+      "",
+      "    class Meta:",
+      "        model = $1",
+      "        fields = {",
+      "            \"field\": [\"exact\"],",
+      "        }",
+      "~"
+    ]
+  }
+}

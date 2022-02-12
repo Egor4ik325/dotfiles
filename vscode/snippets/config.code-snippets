@@ -1,0 +1,9 @@
+// Configuration file snippets for config files
+{
+  // Snippet for pylint --generate-config
+  ".pylintrc": {
+    "scope": "pylintrc",
+    "prefix": "pylintrc",
+    "body": ""
+  }
+}
