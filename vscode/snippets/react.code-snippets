@@ -4,7 +4,7 @@
     "prefix": "Component",
     "body": [
       "const $1 = () => {",
-      "  return <>$0</>;",
+      "  return <div>$0</div>;",
       "};"
     ] // prettier-ignore
   },
@@ -13,19 +13,19 @@
     "prefix": "export default Component",
     "body": [
       "const $1 = () => {",
-      "  return <>$0</>;",
+      "  return <div>$0</div>;",
       "};",
       "",
       "export default $1;"
     ]
   },
-
+  // useXYZ()
+  //
   "const [state, setState] = useState(null);": {
     "scope": "javascript",
     "prefix": "useState",
-    "body": "const [$1, set${1/(.*)/${1:/capitalize}/}] = useState(null);"
+    "body": "const [$1, set${1/(.*)/${1:/capitalize}/}] = useState(undefined);"
   },
-
   "useEffect(() => {}, []);": {
     "scope": "javascript",
     "prefix": "useEffect",
@@ -36,7 +36,6 @@
     ], // prettier-ignore
     "description": "useEffect"
   },
-
   "fetchState": {
     "prefix": "fetchState",
     "body": [
@@ -50,27 +49,28 @@
     ],
     "description": "fetchState"
   },
-
   "useState + fetchState": {
+    "scope": "javascript",
     "prefix": "useState, fetchState",
     "body": [
-      "  const [$1, set${1/(.*)/${1:/capitalize}/}] = useState(null);",
+      "const [$1, set${1/(.*)/${1:/capitalize}/}] = useState(undefined);",
       "",
-      "  const fetch${1/(.*)/${1:/capitalize}/} = async () => {",
-      "    try {",
-      "      set${1/(.*)/${1:/capitalize}/}($0);",
-      "    } catch (error) {",
-      "      throw error;",
-      "    }",
-      "  };",
+      "const fetch${1/(.*)/${1:/capitalize}/} = async () => {",
+      "  try {",
+      "    set${1/(.*)/${1:/capitalize}/}($0);",
+      "  } catch (error) {",
+      "    throw error;",
+      "  }",
+      "};",
       "",
-      "  useEffect(() => {",
-      "    fetch${1/(.*)/${1:/capitalize}/}();",
-      "  }, []);"
+      "useEffect(() => {",
+      "  fetch${1/(.*)/${1:/capitalize}/}();",
+      "}, []);"
     ],
     "description": "useState + fetchState"
   },
   "Stateful Component": {
+    "scope": "javascript",
     "prefix": "State Component",
     "body": [
       "import { useState, useEffect } from \"react\";",
@@ -102,7 +102,13 @@
       "};",
       "",
       "export default $1;"
-    ],
-    "description": "Stateful Component"
+    ]
+  },
+  "<Select />": {
+    "scope": "javascript",
+    "prefix": "Select",
+    "body": [
+      "<Select name=\"filtervalue\" options={options} onChange={handleInputChange} />"
+    ]
   }
 }

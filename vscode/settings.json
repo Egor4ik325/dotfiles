@@ -19,7 +19,7 @@
   "extensions.ignoreRecommendations": true,
   // EditorConfig
   "editorconfig.generateAuto": false,
-  "editorconfig.template": "/Users/egorzorin/.dotfiles/editorconfig/.editorconfig",
+  "editorconfig.template": "/Users/egorzorin/.editorconfig",
   // Draw.io
   "hediet.vscode-drawio.codeLinkActivated": false,
   "hediet.vscode-drawio.theme": "automatic",
@@ -45,12 +45,16 @@
     "deserialization",
     "Egor",
     "gtins",
+    "laquo",
     "Nezort",
     "openapi",
     "oraganization",
+    "raquo",
     "serializers",
     "Signin",
-    "signup"
+    "signup",
+    "vectorize",
+    "Zorin"
   ],
   // Error lens
   "errorLens.fontSize": "12px",
@@ -214,7 +218,7 @@
   //
   // Python
   //
-  "python.pythonPath": "~/.pyenv/versions/3.9.6/bin/python",
+  "python.pythonPath": "/Users/egorzorin/.pyenv/versions/3.9.6/bin/python",
   "python.venvPath": "~/.local/share/virtualenvs",
   "python.terminal.activateEnvironment": true, // or zsh pipenv plugin
   "python.globalModuleInstallation": true, // global black, pylint, ...
