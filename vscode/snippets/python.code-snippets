@@ -1,0 +1,29 @@
+{
+  "@dataclass Class": {
+    "scope": "python",
+    "prefix": "dataclass",
+    "body": [
+      "@dataclass",
+      "class $1:",
+      "    \"\"\"Data class for ${1/(.*)/${1:/downcase}/}s.\"\"\"",
+      "    $0",
+      ""
+    ]
+  },
+  // USE dataclass! it is a Pythonic replacement for TypedDict
+  //   "class Class(TypedDict)": {
+  //     "scope": "python",
+  //     "prefix": "TypedDict",
+  //     "body": [
+  //       "class $1(TypedDict):",
+  //       "    \"\"\"$1 dictionary field type hints.\"\"\"",
+  //       "    ",
+  //       "    $0"
+  //     ]
+  //   },
+  "def __name__ == \"__main__\"": {
+    "scope": "python",
+    "prefix": "namemain",
+    "body": ["if __name__ == \"__main__\":", "    $0"]
+  }
+}

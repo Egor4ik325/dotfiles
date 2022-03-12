@@ -10,8 +10,8 @@
       "class $1Config(AppConfig):",
       "    \"\"\"Application config for ${1/(.*)/${1:/downcase}/}.\"\"\"",
       "",
-      "    name = \"${1/(.*)/${1:/downcase}/}\"", // used in INSTALLED_APPS
-      "    verbose_name = _(\"$1\")", // for API docs gen + for admin (user + i18n)
+      "    name = \"apps.${1/(.*)/${1:/downcase}/}\"", // used in INSTALLED_APPS
+      "    verbose_name = \"$1\"", // for API docs gen + for admin (user + i18n)
       "    label = \"${1/(.*)/${1:/downcase}/}\"",
       ""
     ]
@@ -45,6 +45,13 @@
     "prefix": "reverse",
     "body": ["from django.urls import reverse"]
   },
+  "raise ValidationError()": {
+    "scope": "python",
+    "prefix": "raise ValidationError",
+    "body": [
+      "raise ValidationError(\"%(value)s $1\", params={\"value\": 3}, code=\"invalid\")"
+    ]
+  },
   //
   // Djnago admin framework
   //
@@ -67,35 +74,33 @@
     "prefix": "Model",
     "body": [
       "class $1(models.Model):",
-      "    \"\"\"Model representing ${1/(.*)/${1:/downcase}/}. Fat model pattern (API/admin).\"\"\"",
+      "    \"\"\"Model representing ${1/(.*)/${1:/downcase}/}.\"\"\"",
+      //  Fat model pattern (API/admin).
       "",
-      "    # TODO: check whether AutoField is needed (uuid, shortuuid, slug)",
-      "    id = models.BigAutoField(verbose_name=_(\"ID\"), primary_key=True)",
+      // "    # TODO: check whether AutoField is needed (uuid, shortuuid, slug)",
+      "    id = models.BigAutoField(verbose_name=\"ID\", primary_key=True)",
       "    $0",
       "",
-      "    created = models.DateTimeField(verbose_name=_(\"created\"), auto_now_add=True)",
-      "    # TODO: check whether custom manager is needed (database-computed properties)",
-      "    objects = models.Manager()",
+      "    created = models.DateTimeField(verbose_name=\"created\", auto_now_add=True)",
+      // "    # TODO: check whether custom manager is needed (database-computed properties)",
+      // "    objects = models.Manager()",
       "",
       "    class Meta:",
-      "        verbose_name = _(\"$1\")", // for admin (user, i18n)
-      "        verbose_name_plural = _(\"$1s\")", // for admin (user, i18n)
-      "        constraints = [UniqueConstraint(), CheckConstraint()]",
+      "        verbose_name = \"$1\"", // for admin (user, i18n)
+      "        verbose_name_plural = \"$1s\"", // for admin (user, i18n)
+      "        constraints = [models.UniqueConstraint(), models.CheckConstraint()]",
       "        ordering = [\"created\"]",
       // "        default_permissions = [\"add\", \"change\", \"delete\", \"view\"]",
       // "        permissions = []",
       "",
       "    def clean(self) -> None:",
-      "        \"\"\"Field-wide validation of ${1/(.*)/${1:/downcase}/} instance. Will be run even if field-level validation fails.\"\"\"",
-      "        ",
-      "        # TODO: consider using model constraints",
+      "        \"\"\"Field-wide validation of ${1/(.*)/${1:/downcase}/} instance (after field-level validation fails).\"\"\"",
+      // "        # TODO: consider using model constraints",
       "        pass",
       "",
       "    def save(self, *args, **kwargs) -> None:",
       "        \"\"\"Object create/update fields saving process.\"\"\"",
-      "        # TODO: add custom view ValidationError/IntegrityError handler",
       "        self.full_clean()",
-      "",
       "        super().save(*args, **kwargs)",
       "",
       "    def __str__(self) -> str:",
@@ -113,11 +118,11 @@
       "class $1Mixin(models.Model):",
       "    \"\"\"$1 model mixin.\"\"\"",
       "",
-      "    # TODO: check whether AutoField is needed (uuid, shortuuid, slug)",
-      "    id = models.BigAutoField(verbose_name=_(\"ID\"), primary_key=True)",
+      // "    # TODO: check whether AutoField is needed (uuid, shortuuid, slug)",
+      "    id = models.BigAutoField(verbose_name=\"ID\", primary_key=True)",
       "    $0",
       "",
-      "    # TODO: check whether custom manager is needed (database-computed properties)",
+      // "    # TODO: check whether custom manager is needed (database-computed properties)",
       "    objects = models.Manager()",
       "",
       "    class Meta:",
@@ -144,13 +149,13 @@
     "prefix": "Field",
     "body": [
       "$1 = models.$2Field(",
-      "    verbose_name=_(\"${1/(.*)/${1:/capitalize}/}\"),", // for API documentation generation + for admin (user, i18n)
-      "    help_text=_(\"\"),", // for API documentation generation + for admin (user, i18n)
+      "    verbose_name=\"${1/(.*)/${1:/capitalize}/}\",", // for API documentation generation + for admin (user, i18n)
+      "    help_text=\"\",", // for API documentation generation + for admin (user, i18n)
       "    db_index=True,", // For slug fields
       "    error_messages={", // More concrete error messages
-      "        \"null\": _(\"\"),",
-      "        \"blank\": _(\"\"),",
-      "        \"unique\": _(\"\"),",
+      "        \"null\": \"\",",
+      "        \"blank\": \"\",",
+      "        \"unique\": \"\",",
       "    },",
       "    editable=True,", // For not editable in the admin
       "    blank=False,", // Whether field can be left blank (default value "" or None)
@@ -166,13 +171,13 @@
     "prefix": "ForeignKey",
     "body": [
       "$1 = models.ForeignKey(",
-      "    verbose_name=_(\"${1/(.*)/${1:/capitalize}/}\"),",
+      "    verbose_name=\"${1/(.*)/${1:/capitalize}/}\",",
       "    to=\"$1s.${1/(.*)/${1:/capitalize}/}\",",
       "    on_delete=models.CASCADE,",
       "    related_name=\"${TM_DIRECTORY/.*\\///}\",",
-      "    blank=False,",
-      "    null=False,",
-      "    unique=False,",
+      //   "    blank=False,",
+      //   "    null=False,",
+      //   "    unique=False,",
       ")"
     ]
   },
@@ -181,7 +186,7 @@
     "prefix": "UserForeignKey",
     "body": [
       "user = models.ForeignKey(",
-      "    verbose_name=_(\"user\"),",
+      "    verbose_name=\"user\",",
       "    to=getattr(settings, \"AUTH_USER_MODEL\"),",
       // "    to=getattr(settings, 'AUTH_USER_MODEL', 'auth.User'),",
       "    on_delete=models.CASCADE,",
@@ -193,59 +198,59 @@
     "scope": "python",
     "prefix": "CharField",
     "body": [
-      "$1 = models.CharField(verbose_name=_(\"$1\"), max_length=255, unique=False, blank=False)"
+      "$1 = models.CharField(verbose_name=\"$1\", max_length=255, unique=False, blank=False)"
     ]
   },
   "models.SlugField()": {
     "scope": "python",
     "prefix": "SlugField",
     "body": [
-      "$1 = models.SlugField(verbose_name=_(\"$1\"), db_index=True, unique=True, blank=False)"
+      "$1 = models.SlugField(verbose_name=\"$1\", db_index=True, unique=True, blank=False)"
     ]
   },
   "models.DateTimeField()": {
     "scope": "python",
     "prefix": "DateTimeField",
     "body": [
-      "$1 = models.DateTimeField(verbose_name=_(\"$1\"), auto_now_add=False, auto_now=False)"
+      "$1 = models.DateTimeField(verbose_name=\"$1\", auto_now_add=False, auto_now=False)"
     ]
   },
   "models.IntegerField()": {
     "scope": "python",
     "prefix": "IntegerField",
     "body": [
-      "$1 = models.IntegerField(verbose_name=_(\"$1\"), unique=False, null=False, blank=False, default=0)"
+      "$1 = models.IntegerField(verbose_name=\"$1\", unique=False, null=False, blank=False, default=0)"
     ]
   },
   "models.PositiveIntegerField()": {
     "scope": "python",
     "prefix": "PositiveIntegerField",
     "body": [
-      "$1 = models.PositiveIntegerField(verbose_name=_(\"$1\"), unique=False, null=False, blank=False, default=0)"
+      "$1 = models.PositiveIntegerField(verbose_name=\"$1\", unique=False, null=False, blank=False, default=0)"
     ]
   },
   "models.TextField()": {
     "scope": "python",
     "prefix": "TextField",
-    "body": ["$1 = models.TextField(verbose_name=_(\"$1\"), blank=True)"]
+    "body": ["$1 = models.TextField(verbose_name=\"$1\", blank=True)"]
   },
   "models.UUIDField()": {
     "scope": "python",
     "prefix": "UUIDField",
     "body": [
-      "$1 = models.UUIDField(verbose_name=_(\"$1\"), primary_key=True, default=uuid.uuid4, editable=False)"
+      "$1 = models.UUIDField(verbose_name=\"$1\", primary_key=True, default=uuid.uuid4, editable=False)"
     ]
   },
   "models.BooleanField()": {
     "scope": "python",
     "prefix": "BooleanField",
-    "body": ["$1 = models.BooleanField(verbose_name=_(\"$1\"), default=False)"]
+    "body": ["$1 = models.BooleanField(verbose_name=\"$1\", default=False)"]
   },
   "models.ManyToManyField()": {
     "scope": "python",
     "prefix": "ManyToManyField",
     "body": [
-      "$1 = models.ManyToManyField(verbose_name=_(\"$1\"), to=\"$2\", related_name=\"$3\", blank=True)"
+      "$1 = models.ManyToManyField(verbose_name=\"$1\", to=\"$2\", related_name=\"$3\", blank=True)"
     ],
     "description": "models.ManyToManyField()"
   },
@@ -253,21 +258,14 @@
     "scope": "python",
     "prefix": "FileField",
     "body": [
-      "$1 = models.FileField(verbose_name=_(\"$1\"), upload_to=\"$2\", max_length=255, blank=False, default=None, null=True)"
+      "$1 = models.FileField(verbose_name=\"$1\", upload_to=\"$2\", max_length=255, blank=False, default=None, null=True)"
     ]
   },
   "models.ImageField()": {
     "scope": "python",
     "prefix": "ImageField",
     "body": [
-      "$1 = models.ImageField(verbose_name=_(\"$1\"), upload_to=\"$2\", max_length=255, blank=True, default=None, null=True)"
-    ]
-  },
-  "id = ShortUUIDField()": {
-    "scope": "python",
-    "prefix": "ShortUUIDField",
-    "body": [
-      "id = ShortUUIDField(verbose_name=_(\"ID\"), max_length=40, length=16, primary_key=True)"
+      "$1 = models.ImageField(verbose_name=\"$1\", upload_to=\"$2\", max_length=255, blank=True, default=None, null=True)"
     ]
   },
   // Field char-stored choices (with example body)
@@ -276,9 +274,9 @@
     "prefix": "TextChoices",
     "body": [
       "class $1Choices(models.TextChoices):",
-      "    FREE = \"F\", _(\"Free\")",
-      "    PAID = \"P\", _(\"Paid\")",
-      "    OPEN_SOURCE = \"O\", _(\"Open-Source\")"
+      "    FREE = \"F\", \"Free\"",
+      "    PAID = \"P\", \"Paid\"",
+      "    OPEN_SOURCE = \"O\", \"Open-Source\""
     ]
   },
   // Field interger-stored choices (with example body)
@@ -287,11 +285,87 @@
     "prefix": "IntegerChoices",
     "body": [
       "class $1(models.IntegerChoices):",
-      "    LOWEST = 1, _(\"Lowest\")",
-      "    LOW = 2, _(\"Low\")",
-      "    NORMAL = 3, _(\"Normal\")",
-      "    HIGH = 4, _(\"High\")",
-      "    HIGHEST = 5, _(\"Highest\")"
+      "    LOWEST = 1, \"Lowest\"",
+      "    LOW = 2, \"Low\"",
+      "    NORMAL = 3, \"Normal\"",
+      "    HIGH = 4, \"High\"",
+      "    HIGHEST = 5, \"Highest\""
+    ]
+  },
+  "serializers.SlugRelatedField()": {
+    "scope": "python",
+    "prefix": "SlugRelatedField",
+    "body": [
+      "$1 = serializers.SlugRelatedField(many=False, source=\"$2\", slug_field=\"$3\", read_only=True, queryset=None)"
+    ]
+  },
+  "serializers.ReadOnlyField()": {
+    "scope": "python",
+    "prefix": "ReadOnlyField",
+    "body": ["$1 = serializers.ReadOnlyField(source=\"$1.$2\")"]
+  },
+  // shortuuid
+  "id = ShortUUIDField()": {
+    "scope": "python",
+    "prefix": "ShortUUIDField",
+    "body": [
+      "id = ShortUUIDField(verbose_name=\"ID\", length=16, primary_key=True, editable=False)"
+    ]
+  },
+  // django-models-utils
+  "token = UrlsafeTokenField()": {
+    "scope": "python",
+    "prefix": "UrlsafeTokenField",
+    "body": [
+      "token = UrlsafeTokenField(verbose_name=\"URL safe random token\", editable=False, max_length=128)"
+    ]
+  },
+  // drf-extra-fields
+  "image = Base64ImageField()": {
+    "scope": "python",
+    "prefix": "Base64ImageField",
+    "body": ["image = Base64ImageField()"]
+  },
+  // django-extensions
+  "slug = AutoSlugField()": {
+    "scope": "python",
+    "prefix": "AutoSlugField",
+    "body": [
+      "slug = AutoSlugField(verbose_name=\"Slug\", populate_from=[\"title\"])"
+    ]
+  },
+  // django-money
+  "money = MoneyField()": {
+    "scope": "python",
+    "prefix": "MoneyField",
+    "body": [
+      "money = MoneyField(vebose_name=\"Money\", max_digits=14, decimal_places=2, default_currency='USD')"
+    ]
+  },
+  // django-phonenumber-field[phonenumbers]
+  "phone = PhoneNumberField()": {
+    "scope": "python",
+    "prefix": "PhoneNumberField",
+    "body": ["phone = PhoneNumberField(verbose_name=\"Phone E164 number\")"]
+  },
+  // django-countries
+  "country = CountryField()": {
+    "scope": "python",
+    "prefix": "CountryField",
+    "body": ["country = CountryField(vebose_name=\"Country\")"]
+  },
+  // django-address
+  "address = AddressField()": {
+    "scope": "python",
+    "prefix": "AddressField",
+    "body": ["address = AddressField(vebose_name=\"Address\")"]
+  },
+  // django-imagekit
+  "avatar = ProcessedImageField()": {
+    "scope": "python",
+    "prefix": "ProcessedImageField",
+    "body": [
+      "avatar = ProcessedImageField(upload_to=\"avatars\", processors=[ResizeToFill(100, 50)], format=\"JPEG\", options={\"quality\": 60})"
     ]
   },
   //
@@ -320,16 +394,16 @@
       "class $1Serializer(serializers.ModelSerializer):",
       "    \"\"\"Serializer and deserializer for ${1/(.*)/${1:/downcase}/} model.\"\"\"",
       "",
-      "    # TODO: check whether relation fields need permission filtering",
-      "    # TODO: check whether fields need renaming (source keyword)",
+      // "    # TODO: check whether relation fields need permission filtering",
+      // "    # TODO: check whether fields need renaming (source keyword)",
       // SlugRelatedField MUST be just named RelatedTargetField and slug_field to just target_field
       "",
       "    class Meta:",
       "        model = $1",
       "        fields = []",
-      "        # TODO: check whether separate update serializer is needed",
+      // "        # TODO: check whether separate update serializer is needed",
       "        read_only_fields = []",
-      "        # TODO: check whether user field should be set to request.user",
+      // "        # TODO: check whether user field should be set to request.user",
       "        extra_kwargs = {}",
       ""
       // "    def validate(self, data: dict) -> dict:",
@@ -342,8 +416,8 @@
     "scope": "python",
     "prefix": "ModelViewSet",
     "body": [
-      "class $1ViewSet($2ModelViewSet):",
-      "    \"\"\"ViewSet for ${1/(.*)/${1:/downcase}/}.\"\"\"",
+      "class $1ViewSet(ModelViewSet):",
+      "    \"\"\"ViewSet for ${1/(.*)/${1:/downcase}/}, provide `retreive`, `list`, `create`, `update`, `destory` actions.\"\"\"",
       "",
       "    # Queryset and serialization",
       "    queryset = $1.objects.all()",
@@ -355,9 +429,9 @@
       "    lookup_value_regex = r\"[^/.]+\"",
       "",
       "    # Authentication and authorization",
-      "    authentication_classes = [SessionAuthentication, TokenAuthentication] # For 401 response",
+      "    # authentication_classes = [...] # For 401 response",
       "    permission_classes = [$1Permission] # For 403 or 404 responses",
-      "    throttle_classes = [$1BurstRateThrottle, $1SustainRateThrottle]",
+      //   "    throttle_classes = [$1BurstRateThrottle, $1SustainRateThrottle]",
       "",
       // renderer_classes = api_settings.DEFAULT_RENDERER_CLASSES
       // parser_classes = api_settings.DEFAULT_PARSER_CLASSES
@@ -375,9 +449,9 @@
       "    ordering_fields = []",
       "",
       "    def get_queryset(self):",
-      "        \"\"\"Return queryset used in `list`, `retrive`, `update`, `destroy` and `purge` actions.\"\"\"",
-      "        # TODO: check whether filtering is needed (for 404 response)",
-      "        return self.queryset"
+      "        \"\"\"Return re-evaluated queryset. Used in `list`, `retrieve`, `update`, `destroy` and `purge` actions.\"\"\"",
+      "        # TODO: check whether filtering is needed (404 response)",
+      "        return self.queryset.all()"
     ]
   },
   // Custom router model
@@ -427,7 +501,20 @@
       "    ]"
     ]
   },
-  // Request and object level permission checking
+  // drf-nested-routers
+  "router = NestedSimpleRouter()": {
+    "scope": "python",
+    "prefix": "NestedRouter",
+    "body": [
+      "$2s_router = NestedSimpleRouter(router, r\"$2s\", lookup=\"$2\")",
+      "$2s_router.register(r\"$1s\", ${1/(.*)/${1:/capitalize}/}ViewSet)"
+    ]
+  },
+  "router.register()": {
+    "scope": "python",
+    "prefix": "register",
+    "body": ["router.register(r\"$1s\", ${1/(.*)/${1:/capitalize}/}ViewSet)"]
+  },
   "class ModelPermission(BasePermission)": {
     "scope": "python",
     "prefix": "ModelPermission",
@@ -436,17 +523,16 @@
       "    \"\"\"Authorization for ${1/(.*)/${1:/downcase}/}.\"\"\"",
       "",
       "    def has_permission(self, request: Request, view: ViewSet) -> bool:                ",
-      "        \"\"\"Check whether request is able to perform `action` on this `view` at all.\"\"\"",
+      "        \"\"\"Authorization for `list`, `create` or object actions (`retrieve`, `update`, `destroy`).\"\"\"",
       "        return False",
       "",
       "    def has_object_permission(self, request: Request, view: ViewSet, obj: $1) -> bool:",
-      "        \"\"\"$1 instance permission authorization for `retrieve`, `update` and `destory` action querysets.\"\"\"",
+      "        \"\"\"Authorization for `retrieve`, `update` and `destroy` actions.\"\"\"",
       "        # TODO: check whether to use 404 (in queryset) or 403 (permission denied exception)",
       "        return False",
       ""
     ]
   },
-  // Response paginator
   "class ModelPagination(PageNumberPagination):": {
     "scope": "python",
     "prefix": "ModelPagination",
@@ -454,7 +540,7 @@
       "class $1Pagination(PageNumberPagination):",
       "    \"\"\"Response data pagination for ${1/(.*)/${1:/downcase}/}.\"\"\"",
       "",
-      "    page_size = $2 # Consider dependency injection for constants",
+      "    page_size = $2",
       "    max_page_size = $3",
       "    page_query_param = \"page\"",
       "    page_size_query_param = \"page_size\"",
@@ -465,7 +551,7 @@
     "scope": "python",
     "prefix": "APIError",
     "body": [
-      "class $1Error(exceptions.APIException):",
+      "class $1Error(APIException):",
       "    \"\"\"API exception for ${1/(.*)/${1:/downcase}/}.\"\"\"",
       "",
       "    status_code = status.HTTP_400_BAD_REQUEST",

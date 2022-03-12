@@ -13,6 +13,10 @@
   "docker.volumes.sortBy": "CreatedTime",
   "docker.images.sortBy": "CreatedTime",
   "material-icon-theme.activeIconPack": "react",
+  "search.exclude": {
+    "**/node_modules": true,
+    "**/.venv": true
+  },
   // Extensions
   "extensions.autoUpdate": false,
   "extensions.autoCheckUpdates": false,
@@ -40,6 +44,7 @@
     "jupyter"
   ],
   "cSpell.userWords": [
+    "cookiecutter",
     "datasheet",
     "datasheets",
     "deserialization",
@@ -50,6 +55,8 @@
     "openapi",
     "oraganization",
     "raquo",
+    "recloning",
+    "runserver",
     "serializers",
     "Signin",
     "signup",
@@ -95,11 +102,7 @@
   "explorer.sortOrder": "type",
   "files.exclude": {
     "**/.git": true,
-    "**/.svn": true,
-    "**/.hg": true,
-    "**/CVS": true,
     "**/.DS_Store": true,
-    "**/Thumbs.db": true,
     // Python
     "**/__pycache__": true,
     "**/*.pyc": true,
@@ -192,6 +195,11 @@
   },
   // Other formatters config
   "nginx-conf-hint.format.align": true,
+  // Icon pack
+  "material-icon-theme.files.associations": {
+    ".env.dev.example": "tune",
+    ".env.prod.example": "tune"
+  },
   //
   // Vim interface
   //
@@ -256,7 +264,8 @@
   // Django
   "files.associations": {
     "**/templates/**/*.html": "jinja",
-    ".env.*": "dotenv"
+    ".env.*": "dotenv",
+    "**/requirements/*.txt": "pip-requirements"
   },
   // Jupyter config (IPython in VS Code + Pylance)
   "jupyter.disableJupyterAutoStart": true,
